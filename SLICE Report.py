@@ -33,14 +33,15 @@ for day in range(1, 4):
         options=["Low", "Average", "High"],
         value="Average",
         key=f"enthusiasm_{day}"
+    )
 
-    if enthusiasm == "Low"
+    # Colour feedback box
+    if enthusiasm == "Low":
         st.error("Enthusiasm: Low 😕")
     elif enthusiasm == "Average":
         st.warning("Enthusiasm: Average 😐")
     else:
         st.success("Enthusiasm: High 😄")
-    )
 
     comments = st.text_area(
         "Comments",
@@ -58,22 +59,6 @@ for day in range(1, 4):
         "notes": notes
     }
 
-
-    comments = st.text_area(
-        "Comments",
-        key=f"comments_{day}"
-    )
-
-    notes = st.text_area(
-        "Additional Notes",
-        key=f"notes_{day}"
-    )
-
-    daily_data[f"day_{day}"] = {
-        "enthusiasm": enthusiasm,
-        "comments": comments,
-        "notes": notes
-    }
 
 
 if st.button("✅ Submit Report"):
