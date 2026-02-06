@@ -161,7 +161,7 @@ with open(file_path, "wb") as f:
                     "comments": comments,
                     "notes": notes,
                     "photos": "; ".join(photo_names)
-                }
+         }
 
         all_schools_data[f"school_{school_index}"] = {
             "school_name": school_name,
