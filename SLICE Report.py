@@ -36,22 +36,39 @@ for day in range(1, 4):
         key=f"enthusiasm_{day}"
     )
 
-    # --- Bright colour indicator (attached below slider)
-    if enthusiasm == "Low":
-        st.markdown(
-            "<div style='margin-top:-8px; color:#ff4b4b; font-weight:600;'>🔴</div>",
-            unsafe_allow_html=True
-        )
-    elif enthusiasm == "Average":
-        st.markdown(
-            "<div style='margin-top:-8px; color:#f7d046; font-weight:600;'>🟡</div>",
-            unsafe_allow_html=True
-        )
-    else:
-        st.markdown(
-            "<div style='margin-top:-8px; color:#2ecc71; font-weight:600;'>🟢</div>",
-            unsafe_allow_html=True
-        )
+  # --- Centered colour indicator under slider
+if enthusiasm == "Low":
+    color = "#ff4b4b"
+    text = "Low enthusiasm 😕"
+elif enthusiasm == "Average":
+    color = "#f7d046"
+    text = "Average enthusiasm 😐"
+else:
+    color = "#2ecc71"
+    text = "High enthusiasm 😄"
+
+st.markdown(
+    f"""
+    <div style="
+        display: flex;
+        justify-content: center;
+        margin-top: -10px;
+        margin-bottom: 10px;
+    ">
+        <div style="
+            background-color: {color};
+            color: black;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        ">
+            {text}
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
     # --- Comments
     comments = st.text_area(
