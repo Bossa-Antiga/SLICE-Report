@@ -29,12 +29,16 @@ daily_data = {}
 for day in range(1, 4):
     st.subheader(f"Day {day}")
 
-enthusiasm_value = st.slider(
+enthusiasm = st.select_slider(
     "Student Enthusiasm",
-    min_value=1,
-    max_value=5,
-    value=3,
-    key=f"enthusiasm_{day}"
+    options=[
+        "Very Low",
+        "Low",
+        "Average",
+        "High",
+        "Very High"
+    ],
+    value="Average"
 )
 
 enthusiasm_map = {
