@@ -21,10 +21,6 @@ travel_rep = st.text_input("Travel Agency Representative")
 
 
 # Daily Reports
-
-# Daily Reports
-
-# Daily Reports
 st.header("📜 Daily Reports")
 
 daily_data = {}
@@ -55,37 +51,6 @@ for day in range(1, 4):
         "notes": notes
     }
 
-
-enthusiasm = st.select_slider(
-    "Student Enthusiasm",
-    options=[
-        "Very Low",
-        "Low",
-        "Average",
-        "High",
-        "Very High"
-    ],
-    value="Average"
-)
-
-
-comments = st.text_area(
-        "Comments",
-        key=f"comments_{day}"
-    )
-
-notes = st.text_area(
-        "Additional Notes",
-        key=f"notes_{day}"
-    )
-
-daily_data[f"day_{day}"] = {
-        "enthusiasm": enthusiasm,
-        "comments": comments,
-        "notes": notes
-    }
-
-# Submit Button
 
 if st.button("✅ Submit Report"):
 
