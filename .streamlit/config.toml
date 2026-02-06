@@ -2,5 +2,5 @@
 primaryColor = "#3498db" 
 backgroundColor = "#0e1117"           # dark background
 secondaryBackgroundColor = "#161b22"  # cards / inputs
-textColor = "#262730"
+textColor = "#FFFFFF"
 font = "georgia"
