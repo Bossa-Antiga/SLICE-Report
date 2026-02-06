@@ -39,17 +39,17 @@ for day in range(1, 4):
     # --- Bright colour indicator (attached below slider)
     if enthusiasm == "Low":
         st.markdown(
-            "<div style='margin-top:-8px; color:#ff4b4b; font-weight:600;'>🔴 Low enthusiasm</div>",
+            "<div style='margin-top:-8px; color:#ff4b4b; font-weight:600;'>🔴</div>",
             unsafe_allow_html=True
         )
     elif enthusiasm == "Average":
         st.markdown(
-            "<div style='margin-top:-8px; color:#f7d046; font-weight:600;'>🟡 Average enthusiasm</div>",
+            "<div style='margin-top:-8px; color:#f7d046; font-weight:600;'>🟡</div>",
             unsafe_allow_html=True
         )
     else:
         st.markdown(
-            "<div style='margin-top:-8px; color:#2ecc71; font-weight:600;'>🟢 High enthusiasm</div>",
+            "<div style='margin-top:-8px; color:#2ecc71; font-weight:600;'>🟢</div>",
             unsafe_allow_html=True
         )
 
