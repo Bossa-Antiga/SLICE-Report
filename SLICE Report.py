@@ -28,33 +28,39 @@ daily_data = {}
 for day in range(1, 4):
     st.subheader(f"Day {day}")
 
-    # Full-width slider row
-    col_slider, col_indicator = st.columns([5, 1])
+    # --- Enthusiasm slider (FULL WIDTH)
+    enthusiasm = st.select_slider(
+        "Student Enthusiasm",
+        options=["Low", "Average", "High"],
+        value="Average",
+        key=f"enthusiasm_{day}"
+    )
 
-    with col_slider:
-        enthusiasm = st.select_slider(
-            "Student Enthusiasm",
-            options=["Low", "Average", "High"],
-            value="Average",
-            key=f"enthusiasm_{day}"
+    # --- Bright colour indicator (attached below slider)
+    if enthusiasm == "Low":
+        st.markdown(
+            "<div style='margin-top:-8px; color:#ff4b4b; font-weight:600;'>🔴 Low enthusiasm</div>",
+            unsafe_allow_html=True
+        )
+    elif enthusiasm == "Average":
+        st.markdown(
+            "<div style='margin-top:-8px; color:#f7d046; font-weight:600;'>🟡 Average enthusiasm</div>",
+            unsafe_allow_html=True
+        )
+    else:
+        st.markdown(
+            "<div style='margin-top:-8px; color:#2ecc71; font-weight:600;'>🟢 High enthusiasm</div>",
+            unsafe_allow_html=True
         )
 
-    with col_indicator:
-        st.markdown("")  # vertical spacing
-        if enthusiasm == "Low":
-            st.markdown("🔴 **Low**")
-        elif enthusiasm == "Average":
-            st.markdown("🟡 **Average**")
-        else:
-            st.markdown("🟢 **High**")
-
-    # Full-width comments
+    # --- Comments
     comments = st.text_area(
         "Comments",
         key=f"comments_{day}",
         height=120
     )
 
+    # --- Additional notes
     notes = st.text_area(
         "Additional Notes",
         key=f"notes_{day}",
