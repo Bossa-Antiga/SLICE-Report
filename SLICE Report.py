@@ -148,11 +148,11 @@ photos = st.file_uploader(
 
 photo_names = []
 
-                for photo in photos:
+for photo in photos:
                     filename = f"{school_index}_day{day}_{photo.name}"
                     file_path = os.path.join(UPLOAD_DIR, filename)
 
-                    with open(file_path, "wb") as f:
+ with open(file_path, "wb") as f:
                         f.write(photo.getbuffer())
 
                     photo_names.append(filename)
