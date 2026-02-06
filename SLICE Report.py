@@ -35,6 +35,14 @@ for day in range(1, 4):
         key=f"enthusiasm_{day}"
     )
 
+        if enthusiasm == "Low":
+        st.error("Enthusiasm: Low 😕")
+    elif enthusiasm == "Average":
+        st.warning("Enthusiasm: Average 😐")
+    else:
+        st.success("Enthusiasm: High 😄")
+
+
     comments = st.text_area(
         "Comments",
         key=f"comments_{day}"
