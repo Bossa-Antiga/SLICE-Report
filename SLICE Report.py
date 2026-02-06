@@ -34,7 +34,7 @@ for day in range(1, 4):
     options=["Low", "Average", "High"],
     value="Average",
     key=f"enthusiasm_{day}"
-)
+ )
 
 
     # Optional color feedback (SAFE, word-based)
