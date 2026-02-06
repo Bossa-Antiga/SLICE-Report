@@ -71,14 +71,14 @@ st.markdown(
 )
 
     # --- Comments
-    comments = st.text_area(
+comments = st.text_area(
         "Comments",
         key=f"comments_{day}",
         height=120
     )
 
     # --- Additional notes
-    notes = st.text_area(
+ notes = st.text_area(
         "Additional Notes",
         key=f"notes_{day}",
         height=120
