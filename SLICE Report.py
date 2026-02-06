@@ -33,9 +33,6 @@ for day in range(1, 4):
         options=["Low", "Average", "High"],
         value="Average",
         key=f"enthusiasm_{day}"
-    )
-
-   
 
     if enthusiasm == "Low":
         st.error("Enthusiasm: Low 😕")
@@ -43,7 +40,7 @@ for day in range(1, 4):
         st.warning("Enthusiasm: Average 😐")
     else:
         st.success("Enthusiasm: High 😄")
-
+    )
 
     comments = st.text_area(
         "Comments",
