@@ -41,13 +41,13 @@ for day in range(1, 4):
     # --- Colour indicator under slider
     if enthusiasm == "Low":
         color = "#ff4b4b"
-        text = "Low enthusiasm 😕"
+        text = "😕"
     elif enthusiasm == "Average":
         color = "#f7d046"
-        text = "Average enthusiasm 😐"
+        text = "😐"
     else:
         color = "#2ecc71"
-        text = "High enthusiasm 😄"
+        text = "😄"
 
     st.markdown(
         f"""
