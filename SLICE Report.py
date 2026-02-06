@@ -129,12 +129,12 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
         unsafe_allow_html=True
     )
 
-                comments = st.text_area(
+            comments = st.text_area(
                     "Comments",
                     key=f"comments_{school_index}_{day}"
                 )
 
-                notes = st.text_area(
+            notes = st.text_area(
                     "Additional Notes",
                     key=f"notes_{school_index}_{day}"
                 )
