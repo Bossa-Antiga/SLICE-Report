@@ -29,6 +29,38 @@ daily_data = {}
 for day in range(1, 4):
     st.subheader(f"Day {day}")
 
+    enthusiasm = st.select_slider(
+        "Student Enthusiasm",
+        options=["Very Low", "Low", "Average", "High", "Very High"],
+        value="Average",
+        key=f"enthusiasm_{day}"
+    )
+
+    # Optional color feedback (SAFE, word-based)
+    if enthusiasm in ["Very Low", "Low"]:
+        st.error("🔴 Low enthusiasm")
+    elif enthusiasm == "Average":
+        st.warning("🟡 Average enthusiasm")
+    else:
+        st.success("🟢 High enthusiasm")
+
+    comments = st.text_area(
+        "Comments",
+        key=f"comments_{day}"
+    )
+
+    notes = st.text_area(
+        "Additional Notes",
+        key=f"notes_{day}"
+    )
+
+    daily_data[f"day_{day}"] = {
+        "enthusiasm": enthusiasm,
+        "comments": comments,
+        "notes": notes
+    }
+
+
 enthusiasm = st.select_slider(
     "Student Enthusiasm",
     options=[
@@ -39,32 +71,6 @@ enthusiasm = st.select_slider(
         "Very High"
     ],
     value="Average"
-)
-
-enthusiasm_map = {
-    1: "Very Low",
-    2: "Low",
-    3: "Average",
-    4: "High",
-    5: "Very High"
-}
-
-enthusiasm = enthusiasm_map[enthusiasm_value]
-if enthusiasm_value in [1, 2]:
-    slider_color = "#e74c3c"   # red
-elif enthusiasm_value == 3:
-    slider_color = "#f1c40f"   # yellow
-else:
-    slider_color = "#2ecc71"   # green
-st.markdown(
-    f"""
-    <style>
-    div[data-baseweb="slider"] > div > div > div {{
-        background-color: {slider_color} !important;
-    }}
-    </style>
-    """,
-    unsafe_allow_html=True
 )
 
 
