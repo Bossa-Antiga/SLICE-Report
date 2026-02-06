@@ -36,11 +36,11 @@ for day in range(1, 4):
     )
 
     if enthusiasm == "Low":
-        st.error("     ")
+        st.error("")
     elif enthusiasm == "Average":
-        st.warning("     ")
+        st.warning("")
     else:
-        st.success("     ")
+        st.success("")
 
 
     comments = st.text_area(
