@@ -139,7 +139,7 @@ notes = st.text_area(
                     key=f"notes_{school_index}_{day}"
                 )
 
-                photos = st.file_uploader(
+photos = st.file_uploader(
                     "Attach photos (optional)",
                     type=["png", "jpg", "jpeg"],
                     accept_multiple_files=True,
