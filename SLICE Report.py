@@ -28,20 +28,23 @@ daily_data = {}
 for day in range(1, 4):
     st.subheader(f"Day {day}")
 
-    enthusiasm = st.select_slider(
-        "Student Enthusiasm",
-        options=["Low", "Average", "High"],
-        value="Average",
-        key=f"enthusiasm_{day}"
-    )
+    col1, col2 = st.columns([4, 1])
 
-    # Colour feedback box
-    if enthusiasm == "Low":
-        st.error("Enthusiasm: Low 😕")
-    elif enthusiasm == "Average":
-        st.warning("Enthusiasm: Average 😐")
-    else:
-        st.success("Enthusiasm: High 😄")
+    with col1:
+        enthusiasm = st.select_slider(
+            "Student Enthusiasm",
+            options=["Low", "Average", "High"],
+            value="Average",
+            key=f"enthusiasm_{day}"
+        )
+
+    with col2:
+        if enthusiasm == "Low":
+            st.markdown("🔴 **Low**")
+        elif enthusiasm == "Average":
+            st.markdown("🟡 **Average**")
+        else:
+            st.markdown("🟢 **High**")
 
     comments = st.text_area(
         "Comments",
