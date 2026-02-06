@@ -35,21 +35,37 @@ for day in range(1, 4):
         key=f"enthusiasm_{day}"
     )
 
- if enthusiasm == "Low":
-    st.markdown(
-        "<div style='color:#ff4b4b; font-weight:600;'>🔴 Enthusiasm: Low</div>",
-        unsafe_allow_html=True
+    if enthusiasm == "Low":
+        st.markdown(
+            "<div style='color:#ff4b4b; font-weight:600;'>🔴 Enthusiasm: Low</div>",
+            unsafe_allow_html=True
+        )
+    elif enthusiasm == "Average":
+        st.markdown(
+            "<div style='color:#f7d046; font-weight:600;'>🟡 Enthusiasm: Average</div>",
+            unsafe_allow_html=True
+        )
+    else:
+        st.markdown(
+            "<div style='color:#2ecc71; font-weight:600;'>🟢 Enthusiasm: High</div>",
+            unsafe_allow_html=True
+        )
+
+    comments = st.text_area(
+        "Comments",
+        key=f"comments_{day}"
     )
-elif enthusiasm == "Average":
-    st.markdown(
-        "<div style='color:#f7d046; font-weight:600;'>🟡 Enthusiasm: Average</div>",
-        unsafe_allow_html=True
+
+    notes = st.text_area(
+        "Additional Notes",
+        key=f"notes_{day}"
     )
-else:
-    st.markdown(
-        "<div style='color:#2ecc71; font-weight:600;'>🟢 Enthusiasm: High</div>",
-        unsafe_allow_html=True
-    )
+
+    daily_data[f"day_{day}"] = {
+        "enthusiasm": enthusiasm,
+        "comments": comments,
+        "notes": notes
+    }
 
 
     comments = st.text_area(
