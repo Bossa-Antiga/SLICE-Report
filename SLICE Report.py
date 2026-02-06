@@ -35,7 +35,7 @@ for day in range(1, 4):
         key=f"enthusiasm_{day}"
     )
 
-        if enthusiasm == "Low":
+    if enthusiasm == "Low":
         st.error("Enthusiasm: Low 😕")
     elif enthusiasm == "Average":
         st.warning("Enthusiasm: Average 😐")
