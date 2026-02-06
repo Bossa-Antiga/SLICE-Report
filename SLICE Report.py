@@ -154,8 +154,7 @@ for photo in photos:
 
 with open(file_path, "wb") as f:
                                f.write(photo.getbuffer())
-
-                    photo_names.append(filename)
+                               photo_names.append(filename)
 
                 daily_data[f"day_{day}"] = {
                     "enthusiasm": enthusiasm,
