@@ -22,6 +22,8 @@ travel_rep = st.text_input("Travel Agency Representative")
 
 # Daily Reports
 
+# Daily Reports
+
 st.header("📜 Daily Reports")
 
 daily_data = {}
@@ -29,22 +31,19 @@ daily_data = {}
 for day in range(1, 4):
     st.subheader(f"Day {day}")
 
-  enthusiasm = st.select_slider(
-    "Student Enthusiasm",
-    options=["Low", "Average", "High"],
-    value="Average",
-    key=f"enthusiasm_{day}"
- )
+    enthusiasm = st.select_slider(
+        "Student Enthusiasm",
+        options=["Low", "Average", "High"],
+        value="Average",
+        key=f"enthusiasm_{day}"
+    )
 
-
-    # Optional color feedback (SAFE, word-based)
- if enthusiasm == "Low":
-    st.error("🔴 Low enthusiasm")
-elif enthusiasm == "Average":
-    st.warning("🟡 Average enthusiasm")
-else:
-    st.success("🟢 High enthusiasm")
-
+    if enthusiasm == "Low":
+        st.error("🔴 Low enthusiasm")
+    elif enthusiasm == "Average":
+        st.warning("🟡 Average enthusiasm")
+    else:
+        st.success("🟢 High enthusiasm")
 
     comments = st.text_area(
         "Comments",
