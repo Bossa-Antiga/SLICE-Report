@@ -74,7 +74,7 @@ notes = st.text_area(
         key=f"notes_{day}"
     )
 
-    daily_data[f"day_{day}"] = {
+daily_data[f"day_{day}"] = {
         "enthusiasm": enthusiasm,
         "comments": comments,
         "notes": notes
