@@ -26,7 +26,7 @@ travel_rep = st.text_input("Travel Agency Representative")
 # -------------------------------------------------
 # Programme setup
 # -------------------------------------------------
-st.header("🗓 Programme Setup")
+st.header("🗓 Programme Days")
 
 num_days = st.number_input(
     "Number of programme days",
