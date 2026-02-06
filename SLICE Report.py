@@ -146,7 +146,7 @@ photos = st.file_uploader(
                     key=f"photos_{school_index}_{day}"
                 )
 
-                photo_names = []
+photo_names = []
 
                 for photo in photos:
                     filename = f"{school_index}_day{day}_{photo.name}"
