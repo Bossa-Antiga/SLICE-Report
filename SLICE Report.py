@@ -29,7 +29,7 @@ daily_data = {}
 for day in range(1, 4):
     st.subheader(f"Day {day}")
 
-   enthusiasm_value = st.slider(
+enthusiasm_value = st.slider(
     "Student Enthusiasm",
     min_value=1,
     max_value=5,
