@@ -28,9 +28,10 @@ daily_data = {}
 for day in range(1, 4):
     st.subheader(f"Day {day}")
 
-    col1, col2 = st.columns([4, 1])
+    # Full-width slider row
+    col_slider, col_indicator = st.columns([5, 1])
 
-    with col1:
+    with col_slider:
         enthusiasm = st.select_slider(
             "Student Enthusiasm",
             options=["Low", "Average", "High"],
@@ -38,22 +39,26 @@ for day in range(1, 4):
             key=f"enthusiasm_{day}"
         )
 
-    with col2:
+    with col_indicator:
+        st.markdown("")  # vertical spacing
         if enthusiasm == "Low":
-            st.markdown("🔴")
+            st.markdown("🔴 **Low**")
         elif enthusiasm == "Average":
-            st.markdown("🟡")
+            st.markdown("🟡 **Average**")
         else:
-            st.markdown("🟢")
+            st.markdown("🟢 **High**")
 
+    # Full-width comments
     comments = st.text_area(
         "Comments",
-        key=f"comments_{day}"
+        key=f"comments_{day}",
+        height=120
     )
 
     notes = st.text_area(
         "Additional Notes",
-        key=f"notes_{day}"
+        key=f"notes_{day}",
+        height=120
     )
 
     daily_data[f"day_{day}"] = {
@@ -61,6 +66,7 @@ for day in range(1, 4):
         "comments": comments,
         "notes": notes
     }
+
 
 
 
