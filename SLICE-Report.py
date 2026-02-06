@@ -1,3 +1,5 @@
+# @title
+%%writefile app.py
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -27,11 +29,40 @@ daily_data = {}
 for day in range(1, 4):
     st.subheader(f"Day {day}")
 
-    enthusiasm = st.select_slider(
-        "Student Enthusiasm",
-        options=["Very Low", "Low", "Average", "High", "Very High"],
-        key=f"enthusiasm_{day}"
-    )
+   enthusiasm_value = st.slider(
+    "Student Enthusiasm",
+    min_value=1,
+    max_value=5,
+    value=3,
+    key=f"enthusiasm_{day}"
+)
+
+enthusiasm_map = {
+    1: "Very Low",
+    2: "Low",
+    3: "Average",
+    4: "High",
+    5: "Very High"
+}
+
+enthusiasm = enthusiasm_map[enthusiasm_value]
+if enthusiasm_value in [1, 2]:
+    slider_color = "#e74c3c"   # red
+elif enthusiasm_value == 3:
+    slider_color = "#f1c40f"   # yellow
+else:
+    slider_color = "#2ecc71"   # green
+st.markdown(
+    f"""
+    <style>
+    div[data-baseweb="slider"] > div > div > div {{
+        background-color: {slider_color} !important;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 
     comments = st.text_area(
         "Comments",
@@ -83,3 +114,4 @@ if st.button("✅ Submit Report"):
 
         st.success("🎉 Report submitted successfully!")
         st.balloons()
+        
