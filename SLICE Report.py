@@ -35,21 +35,20 @@ for day in range(1, 4):
         key=f"enthusiasm_{day}"
     )
 
+        enthusiasm = st.select_slider(
+        "Student Enthusiasm",
+        options=["Low", "Average", "High"],
+        value="Average",
+        key=f"enthusiasm_{day}"
+    )
+
     if enthusiasm == "Low":
-        st.markdown(
-            "<div style='color:#ff4b4b; font-weight:600;'>🔴 Enthusiasm: Low</div>",
-            unsafe_allow_html=True
-        )
+        st.error("Enthusiasm: Low 😕")
     elif enthusiasm == "Average":
-        st.markdown(
-            "<div style='color:#f7d046; font-weight:600;'>🟡 Enthusiasm: Average</div>",
-            unsafe_allow_html=True
-        )
+        st.warning("Enthusiasm: Average 😐")
     else:
-        st.markdown(
-            "<div style='color:#2ecc71; font-weight:600;'>🟢 Enthusiasm: High</div>",
-            unsafe_allow_html=True
-        )
+        st.success("Enthusiasm: High 😄")
+
 
     comments = st.text_area(
         "Comments",
