@@ -69,7 +69,7 @@ comments = st.text_area(
         key=f"comments_{day}"
     )
 
-    notes = st.text_area(
+notes = st.text_area(
         "Additional Notes",
         key=f"notes_{day}"
     )
