@@ -24,6 +24,7 @@ travel_rep = st.text_input("Travel Agency Representative")
 
 # Daily Reports
 
+# Daily Reports
 st.header("📜 Daily Reports")
 
 daily_data = {}
@@ -37,13 +38,6 @@ for day in range(1, 4):
         value="Average",
         key=f"enthusiasm_{day}"
     )
-
-    if enthusiasm == "Low":
-        st.error("🔴")
-    elif enthusiasm == "Average":
-        st.warning("🟡")
-    else:
-        st.success("🟢")
 
     comments = st.text_area(
         "Comments",
