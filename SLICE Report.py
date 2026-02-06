@@ -78,7 +78,7 @@ comments = st.text_area(
     )
 
     # --- Additional notes
- notes = st.text_area(
+notes = st.text_area(
         "Additional Notes",
         key=f"notes_{day}",
         height=120
