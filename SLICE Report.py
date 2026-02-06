@@ -64,7 +64,7 @@ st.markdown(
 )
 
 
-    comments = st.text_area(
+comments = st.text_area(
         "Comments",
         key=f"comments_{day}"
     )
