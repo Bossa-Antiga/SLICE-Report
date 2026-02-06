@@ -40,11 +40,11 @@ for day in range(1, 4):
 
     with col2:
         if enthusiasm == "Low":
-            st.markdown("🔴 **Low**")
+            st.markdown("🔴")
         elif enthusiasm == "Average":
-            st.markdown("🟡 **Average**")
+            st.markdown("🟡")
         else:
-            st.markdown("🟢 **High**")
+            st.markdown("🟢")
 
     comments = st.text_area(
         "Comments",
