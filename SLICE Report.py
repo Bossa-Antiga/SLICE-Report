@@ -1,17 +1,18 @@
-# @title
-
 import streamlit as st
 import pandas as pd
 from datetime import datetime
 import os
 
-st.set_page_config(page_title="School Workshop Report", layout="centered")
+st.set_page_config(
+    page_title="School Workshop Report",
+    layout="centered"
+)
 
 st.title("SLICE Report")
 
-
+# ─────────────────────────────
 # School Information
-
+# ─────────────────────────────
 st.header("🏫 School Information")
 
 school_name = st.text_input("School Name")
@@ -19,8 +20,9 @@ teacher_name = st.text_input("Teacher in Charge")
 num_students = st.number_input("Number of Students", min_value=0, step=1)
 travel_rep = st.text_input("Travel Agency Representative")
 
-
+# ─────────────────────────────
 # Daily Reports
+# ─────────────────────────────
 st.header("📜 Daily Reports")
 
 daily_data = {}
@@ -28,7 +30,7 @@ daily_data = {}
 for day in range(1, 4):
     st.subheader(f"Day {day}")
 
-    # --- Enthusiasm slider (FULL WIDTH)
+    # --- Enthusiasm slider
     enthusiasm = st.select_slider(
         "Student Enthusiasm",
         options=["Low", "Average", "High"],
@@ -36,65 +38,63 @@ for day in range(1, 4):
         key=f"enthusiasm_{day}"
     )
 
-  # --- Centered colour indicator under slider
-if enthusiasm == "Low":
-    color = "#ff4b4b"
-    text = "Low enthusiasm 😕"
-elif enthusiasm == "Average":
-    color = "#f7d046"
-    text = "Average enthusiasm 😐"
-else:
-    color = "#2ecc71"
-    text = "High enthusiasm 😄"
+    # --- Colour indicator under slider
+    if enthusiasm == "Low":
+        color = "#ff4b4b"
+        text = "Low enthusiasm 😕"
+    elif enthusiasm == "Average":
+        color = "#f7d046"
+        text = "Average enthusiasm 😐"
+    else:
+        color = "#2ecc71"
+        text = "High enthusiasm 😄"
 
-st.markdown(
-    f"""
-    <div style="
-        display: flex;
-        justify-content: center;
-        margin-top: -10px;
-        margin-bottom: 10px;
-    ">
+    st.markdown(
+        f"""
         <div style="
-            background-color: {color};
-            color: black;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
+            display: flex;
+            justify-content: center;
+            margin-top: -10px;
+            margin-bottom: 12px;
         ">
-            {text}
+            <div style="
+                background-color: {color};
+                color: black;
+                padding: 6px 16px;
+                border-radius: 20px;
+                font-weight: 600;
+                font-size: 0.9rem;
+            ">
+                {text}
+            </div>
         </div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+        """,
+        unsafe_allow_html=True
+    )
 
     # --- Comments
-comments = st.text_area(
+    comments = st.text_area(
         "Comments",
-        key=f"comments_{day}",
-        height=120
+        key=f"comments_{day}"
     )
 
-    # --- Additional notes
-notes = st.text_area(
+    # --- Additional Notes
+    notes = st.text_area(
         "Additional Notes",
-        key=f"notes_{day}",
-        height=120
+        key=f"notes_{day}"
     )
 
+    # --- Store daily data
     daily_data[f"day_{day}"] = {
         "enthusiasm": enthusiasm,
         "comments": comments,
         "notes": notes
     }
 
-
-
-
+# ─────────────────────────────
+# Submit
+# ─────────────────────────────
 if st.button("✅ Submit Report"):
-
     if not school_name or not teacher_name:
         st.error("Please fill in at least the school name and teacher name.")
     else:
@@ -125,4 +125,3 @@ if st.button("✅ Submit Report"):
 
         st.success("🎉 Report submitted successfully!")
         st.balloons()
-        
