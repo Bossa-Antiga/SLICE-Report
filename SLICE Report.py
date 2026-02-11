@@ -98,13 +98,13 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                 # Color Indicator
                 if enthusiasm == "Low":
                     color = "#ff4b4b"
-                    text = "Low enthusiasm 😕"
+                    text = "😕"
                 elif enthusiasm == "Average":
                     color = "#f7d046"
-                    text = "Average enthusiasm 😐"
+                    text = "😐"
                 else:
                     color = "#2ecc71"
-                    text = "High enthusiasm 😄"
+                    text = "😄"
 
                 st.markdown(
                     f"""
