@@ -29,8 +29,6 @@ num_schools = st.number_input(
 UPLOAD_DIR = "uploaded_photos"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-all_schools_data = {}
-
 # -------------------------------------------------
 # School tabs
 # -------------------------------------------------
@@ -83,9 +81,6 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
 
             with day_tab:
 
-                # -------------------------
-                # Enthusiasm slider
-                # -------------------------
                 enthusiasm = st.select_slider(
                     "Student Enthusiasm",
                     options=["Low", "Average", "High"],
@@ -127,9 +122,6 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                     unsafe_allow_html=True
                 )
 
-                # -------------------------
-                # Comments & Notes
-                # -------------------------
                 comments = st.text_area(
                     "Comments",
                     key=f"comments_{school_index}_{day}"
@@ -140,9 +132,6 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                     key=f"notes_{school_index}_{day}"
                 )
 
-                # -------------------------
-                # Photo upload
-                # -------------------------
                 photos = st.file_uploader(
                     "Attach photos (optional)",
                     type=["png", "jpg", "jpeg"],
@@ -162,7 +151,6 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
 
                         photo_names.append(filename)
 
-                # Store daily data
                 daily_data[f"day_{day}"] = {
                     "enthusiasm": enthusiasm,
                     "comments": comments,
@@ -170,52 +158,35 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                     "photos": "; ".join(photo_names)
                 }
 
-        # Store school data
-        all_schools_data[f"school_{school_index}"] = {
-            "school_name": school_name,
-            "teacher_name": teacher_name,
-            "num_students": num_students,
-            "travel_rep": travel_rep,
-            "num_days": num_days,
-            "daily_data": daily_data
-        }
+        # -------------------------------------------------
+        # Submit THIS school only
+        # -------------------------------------------------
+        st.divider()
 
-# -------------------------------------------------
-# Submit
-# -------------------------------------------------
-st.divider()
+        if st.button(f"✅ Submit School {school_index}", key=f"submit_{school_index}"):
 
-if st.button("✅ Submit All Reports"):
+            if not school_name or not teacher_name:
+                st.error("School name and teacher are required.")
+                st.stop()
 
-    rows = []
+            row = {
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "school_name": school_name,
+                "teacher_name": teacher_name,
+                "num_students": num_students,
+                "travel_rep": travel_rep,
+                "num_days": num_days
+            }
 
-    for school in all_schools_data.values():
+            for day_key, day_data in daily_data.items():
+                row[f"{day_key}_enthusiasm"] = day_data["enthusiasm"]
+                row[f"{day_key}_comments"] = day_data["comments"]
+                row[f"{day_key}_notes"] = day_data["notes"]
+                row[f"{day_key}_photos"] = day_data["photos"]
 
-        if not school["school_name"] or not school["teacher_name"]:
-            st.error("Each school must have a name and teacher.")
-            st.stop()
+            df = pd.DataFrame([row])
 
-        base = {
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "school_name": school["school_name"],
-            "teacher_name": school["teacher_name"],
-            "num_students": school["num_students"],
-            "travel_rep": school["travel_rep"],
-            "num_days": school["num_days"]
-        }
+            file_exists = os.path.isfile("reports.csv")
+            df.to_csv("reports.csv", mode="a", header=not file_exists, index=False)
 
-        for day_key, day_data in school["daily_data"].items():
-            base[f"{day_key}_enthusiasm"] = day_data["enthusiasm"]
-            base[f"{day_key}_comments"] = day_data["comments"]
-            base[f"{day_key}_notes"] = day_data["notes"]
-            base[f"{day_key}_photos"] = day_data["photos"]
-
-        rows.append(base)
-
-    df = pd.DataFrame(rows)
-
-    file_exists = os.path.isfile("reports.csv")
-    df.to_csv("reports.csv", mode="a", header=not file_exists, index=False)
-
-    st.success("🎉 All reports submitted successfully!")
-    st.balloons()
+            st.success(f"🎉 School {school_index} submitted successfully!")
