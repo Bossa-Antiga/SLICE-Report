@@ -30,7 +30,7 @@ UPLOAD_DIR = "uploaded_photos"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # -------------------------------------------------
-# School tabs
+# School Tabs
 # -------------------------------------------------
 school_tabs = st.tabs([f"School {i}" for i in range(1, num_schools + 1)])
 
@@ -40,6 +40,9 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
 
         st.header(f"🏫 School {school_index}")
 
+        # ---------------------------
+        # School Info
+        # ---------------------------
         school_name = st.text_input(
             "School Name",
             key=f"school_name_{school_index}"
@@ -77,10 +80,14 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
 
         day_tabs = st.tabs([f"Day {d}" for d in range(1, num_days + 1)])
 
+        # -------------------------------------------------
+        # Daily Tabs
+        # -------------------------------------------------
         for day, day_tab in enumerate(day_tabs, start=1):
 
             with day_tab:
 
+                # Enthusiasm Slider
                 enthusiasm = st.select_slider(
                     "Student Enthusiasm",
                     options=["Low", "Average", "High"],
@@ -88,16 +95,16 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                     key=f"enthusiasm_{school_index}_{day}"
                 )
 
-                # Colour indicator
+                # Color Indicator
                 if enthusiasm == "Low":
                     color = "#ff4b4b"
-                    text = "😕"
+                    text = "Low enthusiasm 😕"
                 elif enthusiasm == "Average":
                     color = "#f7d046"
-                    text = "😐"
+                    text = "Average enthusiasm 😐"
                 else:
                     color = "#2ecc71"
-                    text = "😄"
+                    text = "High enthusiasm 😄"
 
                 st.markdown(
                     f"""
@@ -105,12 +112,11 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                         display: flex;
                         justify-content: center;
                         margin-top: -10px;
-                        margin-bottom: 12px;
+                        margin-bottom: 15px;
                     ">
                         <div style="
                             background-color: {color};
-                            color: black;
-                            padding: 6px 16px;
+                            padding: 6px 20px;
                             border-radius: 20px;
                             font-weight: 600;
                             font-size: 0.9rem;
@@ -159,113 +165,89 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                 }
 
         # -------------------------------------------------
-        # Submit THIS school only
+        # Submission Logic (Per School)
         # -------------------------------------------------
+        submit_key = f"submit_clicked_{school_index}"
+        confirm_key = f"confirm_submit_{school_index}"
+        submitted_key = f"already_submitted_{school_index}"
+
+        if submit_key not in st.session_state:
+            st.session_state[submit_key] = False
+
+        if confirm_key not in st.session_state:
+            st.session_state[confirm_key] = False
+
+        if submitted_key not in st.session_state:
+            st.session_state[submitted_key] = False
+
         st.divider()
 
-        if st.button(f"✅ Submit School {school_index}", key=f"submit_{school_index}"):
+        if st.session_state[submitted_key]:
+            st.success("✅ This school has already been submitted.")
 
-            # -------------------------------------------------
-# Submission State Setup
-# -------------------------------------------------
-submit_key = f"submit_clicked_{school_index}"
-confirm_key = f"confirm_submit_{school_index}"
-submitted_key = f"already_submitted_{school_index}"
+        else:
 
-if submit_key not in st.session_state:
-    st.session_state[submit_key] = False
+            if st.button(f"📤 Submit School {school_index}", key=f"submit_btn_{school_index}"):
+                st.session_state[submit_key] = True
 
-if confirm_key not in st.session_state:
-    st.session_state[confirm_key] = False
+            if st.session_state[submit_key]:
 
-if submitted_key not in st.session_state:
-    st.session_state[submitted_key] = False
+                st.warning("Are you sure you want to submit this school report?")
 
-st.divider()
+                col1, col2 = st.columns(2)
 
-# -------------------------------------------------
-# If already submitted
-# -------------------------------------------------
-if st.session_state[submitted_key]:
-    st.success("✅ This school has already been submitted.")
-else:
+                with col1:
+                    if st.button("✔ Confirm Save", key=f"confirm_btn_{school_index}"):
+                        st.session_state[confirm_key] = True
 
-    # Step 1: Click Submit
-    if st.button(f"📤 Submit School {school_index}", key=f"submit_{school_index}"):
-        st.session_state[submit_key] = True
+                with col2:
+                    if st.button("❌ Cancel", key=f"cancel_btn_{school_index}"):
+                        st.session_state[submit_key] = False
+                        st.session_state[confirm_key] = False
+                        st.rerun()
 
-    # Step 2: Show confirmation
-    if st.session_state[submit_key]:
+            if st.session_state[confirm_key]:
 
-        st.warning("Are you sure you want to submit this school report?")
+                if not school_name or not teacher_name:
+                    st.error("School name and teacher are required.")
+                    st.stop()
 
-        col1, col2 = st.columns(2)
+                row = {
+                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "school_name": school_name,
+                    "teacher_name": teacher_name,
+                    "num_students": num_students,
+                    "travel_rep": travel_rep,
+                    "num_days": num_days
+                }
 
-        with col1:
-            if st.button("✔ Confirm Save", key=f"confirm_{school_index}"):
-                st.session_state[confirm_key] = True
+                for day_key, day_data in daily_data.items():
+                    row[f"{day_key}_enthusiasm"] = day_data["enthusiasm"]
+                    row[f"{day_key}_comments"] = day_data["comments"]
+                    row[f"{day_key}_notes"] = day_data["notes"]
+                    row[f"{day_key}_photos"] = day_data["photos"]
 
-        with col2:
-            if st.button("❌ Cancel", key=f"cancel_{school_index}"):
+                df = pd.DataFrame([row])
+                file_exists = os.path.isfile("reports.csv")
+                df.to_csv("reports.csv", mode="a", header=not file_exists, index=False)
+
+                st.session_state[submitted_key] = True
                 st.session_state[submit_key] = False
                 st.session_state[confirm_key] = False
-                st.rerun()
 
-    # Step 3: Actually Save
-    if st.session_state[confirm_key]:
+                # Clear session inputs
+                for key in list(st.session_state.keys()):
+                    if key.startswith((
+                        f"school_name_{school_index}",
+                        f"teacher_name_{school_index}",
+                        f"num_students_{school_index}",
+                        f"travel_rep_{school_index}",
+                        f"num_days_{school_index}",
+                        f"enthusiasm_{school_index}_",
+                        f"comments_{school_index}_",
+                        f"notes_{school_index}_",
+                        f"photos_{school_index}_"
+                    )):
+                        del st.session_state[key]
 
-        if not school_name or not teacher_name:
-            st.error("School name and teacher are required.")
-            st.stop()
-
-        row = {
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "school_name": school_name,
-            "teacher_name": teacher_name,
-            "num_students": num_students,
-            "travel_rep": travel_rep,
-            "num_days": num_days
-        }
-
-        for day_key, day_data in daily_data.items():
-            row[f"{day_key}_enthusiasm"] = day_data["enthusiasm"]
-            row[f"{day_key}_comments"] = day_data["comments"]
-            row[f"{day_key}_notes"] = day_data["notes"]
-            row[f"{day_key}_photos"] = day_data["photos"]
-
-        df = pd.DataFrame([row])
-        file_exists = os.path.isfile("reports.csv")
-        df.to_csv("reports.csv", mode="a", header=not file_exists, index=False)
-
-        # Mark as submitted
-        st.session_state[submitted_key] = True
-
-        # Reset confirmation flags
-        st.session_state[submit_key] = False
-        st.session_state[confirm_key] = False
-
-        # -------------------------------------------------
-        # Auto-clear fields
-        # -------------------------------------------------
-        keys_to_clear = [
-            f"school_name_{school_index}",
-            f"teacher_name_{school_index}",
-            f"num_students_{school_index}",
-            f"travel_rep_{school_index}",
-            f"num_days_{school_index}"
-        ]
-
-        for key in list(st.session_state.keys()):
-            if key.startswith((
-                f"enthusiasm_{school_index}_",
-                f"comments_{school_index}_",
-                f"notes_{school_index}_",
-                f"photos_{school_index}_"
-            )):
-                del st.session_state[key]
-
-        for key in keys_to_clear:
-            if key in st.session_state:
-                del st.session_state[key]
-
-        st.success(f"🎉 School {school_index} submitted successfully!")
+                st.success(f"🎉 School {school_index} submitted successfully!")
