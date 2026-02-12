@@ -211,7 +211,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
 
 if st.session_state[confirm_key]:
 
-    if not school_name or not teacher_name:
+     if not school_name or not teacher_name:
         st.error("School name and teacher are required.")
         st.stop()
 
