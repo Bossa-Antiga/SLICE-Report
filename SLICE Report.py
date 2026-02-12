@@ -1,7 +1,9 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
+import requests  
 import os
+ 
+WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbySK0gEBBqWnAQP_PTgygm5aQQCusSMk2HXciXkDvleeETyw3EGZP1dCF5sRJaKI5NUiA/exec"
 
 # -------------------------------------------------
 # Page config
@@ -227,9 +229,18 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                     row[f"{day_key}_notes"] = day_data["notes"]
                     row[f"{day_key}_photos"] = day_data["photos"]
 
-                df = pd.DataFrame([row])
-                file_exists = os.path.isfile("reports.csv")
-                df.to_csv("reports.csv", mode="a", header=not file_exists, index=False)
+               try:
+    response = requests.post(WEBHOOK_URL, json=row)
+
+    if response.status_code == 200:
+        st.success(f"🎉 School {school_index} submitted successfully to Google Sheets!")
+    else:
+        st.error("❌ Failed to send data to Google Sheets.")
+        st.write("Status code:", response.status_code)
+
+except Exception as e:
+    st.error("❌ Connection error while sending to Google Sheets.")
+    st.write(str(e))
 
                 st.session_state[submitted_key] = True
                 st.session_state[submit_key] = False
