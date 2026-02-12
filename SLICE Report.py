@@ -229,7 +229,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                     row[f"{day_key}_notes"] = day_data["notes"]
                     row[f"{day_key}_photos"] = day_data["photos"]
 
-               try:
+try:
     response = requests.post(WEBHOOK_URL, json=row)
 
     if response.status_code == 200:
