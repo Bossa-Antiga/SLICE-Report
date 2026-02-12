@@ -208,57 +208,57 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                         st.session_state[confirm_key] = False
                         st.rerun()
 
-            if st.session_state[confirm_key]:
+if st.session_state[confirm_key]:
 
-                if not school_name or not teacher_name:
-                    st.error("School name and teacher are required.")
-                    st.stop()
+    if not school_name or not teacher_name:
+        st.error("School name and teacher are required.")
+        st.stop()
 
-                row = {
-                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "school_name": school_name,
-                    "teacher_name": teacher_name,
-                    "num_students": num_students,
-                    "travel_rep": travel_rep,
-                    "num_days": num_days
-                }
+    row = {
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "school_name": school_name,
+        "teacher_name": teacher_name,
+        "num_students": num_students,
+        "travel_rep": travel_rep,
+        "num_days": num_days
+    }
 
-                for day_key, day_data in daily_data.items():
-                    row[f"{day_key}_enthusiasm"] = day_data["enthusiasm"]
-                    row[f"{day_key}_comments"] = day_data["comments"]
-                    row[f"{day_key}_notes"] = day_data["notes"]
-                    row[f"{day_key}_photos"] = day_data["photos"]
+    for day_key, day_data in daily_data.items():
+        row[f"{day_key}_enthusiasm"] = day_data["enthusiasm"]
+        row[f"{day_key}_comments"] = day_data["comments"]
+        row[f"{day_key}_notes"] = day_data["notes"]
+        row[f"{day_key}_photos"] = day_data["photos"]
 
-try:
-    response = requests.post(WEBHOOK_URL, json=row)
+    try:
+        response = requests.post(WEBHOOK_URL, json=row)
 
-    if response.status_code == 200:
-        st.success(f"🎉 School {school_index} submitted successfully to Google Sheets!")
-    else:
-        st.error("❌ Failed to send data to Google Sheets.")
-        st.write("Status code:", response.status_code)
+        if response.status_code == 200:
 
-except Exception as e:
-    st.error("❌ Connection error while sending to Google Sheets.")
-    st.write(str(e))
+            st.session_state[submitted_key] = True
+            st.session_state[submit_key] = False
+            st.session_state[confirm_key] = False
 
-                st.session_state[submitted_key] = True
-                st.session_state[submit_key] = False
-                st.session_state[confirm_key] = False
+            # Clear session inputs
+            for key in list(st.session_state.keys()):
+                if key.startswith((
+                    f"school_name_{school_index}",
+                    f"teacher_name_{school_index}",
+                    f"num_students_{school_index}",
+                    f"travel_rep_{school_index}",
+                    f"num_days_{school_index}",
+                    f"enthusiasm_{school_index}_",
+                    f"comments_{school_index}_",
+                    f"notes_{school_index}_",
+                    f"photos_{school_index}_"
+                )):
+                    del st.session_state[key]
 
-                # Clear session inputs
-                for key in list(st.session_state.keys()):
-                    if key.startswith((
-                        f"school_name_{school_index}",
-                        f"teacher_name_{school_index}",
-                        f"num_students_{school_index}",
-                        f"travel_rep_{school_index}",
-                        f"num_days_{school_index}",
-                        f"enthusiasm_{school_index}_",
-                        f"comments_{school_index}_",
-                        f"notes_{school_index}_",
-                        f"photos_{school_index}_"
-                    )):
-                        del st.session_state[key]
+            st.success(f"🎉 School {school_index} submitted successfully!")
 
-                st.success(f"🎉 School {school_index} submitted successfully!")
+        else:
+            st.error("❌ Failed to send data to Google Sheets.")
+            st.write("Status code:", response.status_code)
+
+    except Exception as e:
+        st.error("❌ Connection error while sending to Google Sheets.")
+        st.write(str(e))
