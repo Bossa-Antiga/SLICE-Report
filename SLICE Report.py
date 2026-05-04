@@ -6,7 +6,7 @@ import os
 # -------------------------------------------------
 # GOOGLE SHEETS WEBHOOK
 # -------------------------------------------------
-WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbySK0gEBBqWnAQP_PTgygm5aQQCusSMk2HXciXkDvleeETyw3EGZP1dCF5sRJaKI5NUiA/exec"
+WEBHOOK_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEBHOOK_URL"
 
 # -------------------------------------------------
 # PAGE CONFIG
@@ -48,7 +48,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
         st.header(f"🏫 School {school_index}")
 
         # -------------------------------------------------
-        # SCHOOL INFORMATION
+        # SCHOOL INFO
         # -------------------------------------------------
         school_name = st.text_input(
             "School Name",
@@ -89,6 +89,8 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
         day_tabs = st.tabs(
             [f"Day {d}" for d in range(1, num_days + 1)]
         )
+
+        all_day_data = []
 
         for day, day_tab in enumerate(day_tabs, start=1):
 
@@ -142,14 +144,14 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                 )
 
                 # -------------------------------------------------
-                # COMMENTS
+                # COMMENTS + NOTES
                 # -------------------------------------------------
-                st.text_area(
+                comments = st.text_area(
                     "Comments",
                     key=f"comments_{school_index}_{day}"
                 )
 
-                st.text_area(
+                notes = st.text_area(
                     "Additional Notes",
                     key=f"notes_{school_index}_{day}"
                 )
@@ -163,6 +165,8 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                     accept_multiple_files=True,
                     key=f"photos_{school_index}_{day}"
                 )
+
+                photo_names = []
 
                 if photos:
 
@@ -180,147 +184,70 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                         with open(filepath, "wb") as f:
                             f.write(photo.getbuffer())
 
+                        photo_names.append(filename)
+
+                # -------------------------------------------------
+                # STORE DAY DATA
+                # -------------------------------------------------
+                all_day_data.append({
+                    "Day": f"Day {day}",
+                    "Enthusiasm": enthusiasm,
+                    "Comments": comments,
+                    "Notes": notes,
+                    "Photos": "; ".join(photo_names)
+                })
+
         # -------------------------------------------------
-        # SESSION STATE KEYS
+        # SUBMIT BUTTON
         # -------------------------------------------------
-        submit_key = f"submit_clicked_{school_index}"
-        confirm_key = f"confirm_submit_{school_index}"
-        submitted_key = f"submitted_{school_index}"
-
-        if submit_key not in st.session_state:
-            st.session_state[submit_key] = False
-
-        if confirm_key not in st.session_state:
-            st.session_state[confirm_key] = False
-
-        if submitted_key not in st.session_state:
-            st.session_state[submitted_key] = False
-
         st.divider()
 
-        # -------------------------------------------------
-        # ALREADY SUBMITTED
-        # -------------------------------------------------
-        if st.session_state[submitted_key]:
+        if st.button(
+            f"📤 Submit School {school_index}",
+            key=f"submit_btn_{school_index}"
+        ):
 
-            st.success(
-                "✅ This school has already been submitted."
-            )
+            if not school_name or not teacher_name:
 
-        else:
-
-            # -------------------------------------------------
-            # SUBMIT BUTTON
-            # -------------------------------------------------
-            if st.button(
-                f"📤 Submit School {school_index}",
-                key=f"submit_btn_{school_index}"
-            ):
-                st.session_state[submit_key] = True
-
-            # -------------------------------------------------
-            # CONFIRMATION BOX
-            # -------------------------------------------------
-            if st.session_state[submit_key]:
-
-                st.warning(
-                    "Are you sure you want to submit this school report?"
+                st.error(
+                    "School name and teacher are required."
                 )
 
-                col1, col2 = st.columns(2)
+            else:
 
-                with col1:
+                try:
 
-                    if st.button(
-                        "✔ Confirm Save",
-                        key=f"confirm_btn_{school_index}"
-                    ):
-                        st.session_state[confirm_key] = True
+                    # -------------------------------------------------
+                    # SEND EACH DAY AS A NEW ROW
+                    # -------------------------------------------------
+                    for day_data in all_day_data:
 
-                with col2:
+                        row = {
+                            "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            "School Name": school_name,
+                            "Teacher Name": teacher_name,
+                            "Number of Students": num_students,
+                            "Travel Rep": travel_rep,
+                            "Day": day_data["Day"],
+                            "Enthusiasm": day_data["Enthusiasm"],
+                            "Comments": day_data["Comments"],
+                            "Notes": day_data["Notes"],
+                            "Photos": day_data["Photos"]
+                        }
 
-                    if st.button(
-                        "❌ Cancel",
-                        key=f"cancel_btn_{school_index}"
-                    ):
-                        st.session_state[submit_key] = False
-                        st.session_state[confirm_key] = False
-                        st.rerun()
-
-            # -------------------------------------------------
-            # FINAL SUBMISSION
-            # -------------------------------------------------
-            if st.session_state[confirm_key]:
-
-                if not school_name or not teacher_name:
-
-                    st.error(
-                        "School name and teacher are required."
-                    )
-
-                else:
-
-                    try:
-
-                        # -------------------------------------------------
-                        # SEND ONE ROW PER DAY
-                        # -------------------------------------------------
-                        for day in range(1, num_days + 1):
-
-                            row = {
-                                "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                "School Name": school_name,
-                                "Teacher Name": teacher_name,
-                                "Number of Students": num_students,
-                                "Travel Rep": travel_rep,
-                                "Day": f"Day {day}",
-                                "Enthusiasm": st.session_state.get(
-                                    f"enthusiasm_{school_index}_{day}",
-                                    ""
-                                ),
-                                "Comments": st.session_state.get(
-                                    f"comments_{school_index}_{day}",
-                                    ""
-                                ),
-                                "Notes": st.session_state.get(
-                                    f"notes_{school_index}_{day}",
-                                    ""
-                                ),
-                                "Photos": ""
-                            }
-
-                            response = requests.post(
-                                WEBHOOK_URL,
-                                json=row
-                            )
-
-                            st.write(row)
-                            st.write("Status:", response.status_code)
-                            st.write(response.text)
-
-                        # -------------------------------------------------
-                        # SUCCESS
-                        # -------------------------------------------------
-                        if response.status_code == 200:
-
-                            st.session_state[submitted_key] = True
-                            st.session_state[submit_key] = False
-                            st.session_state[confirm_key] = False
-
-                            st.success(
-                                f"🎉 School {school_index} submitted successfully!"
-                            )
-
-                        else:
-
-                            st.error(
-                                "❌ Failed to send data to Google Sheets."
-                            )
-
-                    except Exception as e:
-
-                        st.error(
-                            "❌ Connection error while sending data."
+                        requests.post(
+                            WEBHOOK_URL,
+                            json=row
                         )
 
-                        st.write(str(e))
+                    st.success(
+                        f"🎉 School {school_index} submitted successfully!"
+                    )
+
+                except Exception as e:
+
+                    st.error(
+                        "❌ Failed to send data to Google Sheets."
+                    )
+
+                    st.write(str(e))
