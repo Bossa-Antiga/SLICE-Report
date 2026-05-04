@@ -3,10 +3,13 @@ import requests
 from datetime import datetime
 import os
 
+# -------------------------------------------------
+# GOOGLE SHEETS WEBHOOK
+# -------------------------------------------------
 WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbySK0gEBBqWnAQP_PTgygm5aQQCusSMk2HXciXkDvleeETyw3EGZP1dCF5sRJaKI5NUiA/exec"
 
 # -------------------------------------------------
-# Page config
+# PAGE CONFIG
 # -------------------------------------------------
 st.set_page_config(
     page_title="School Workshop Report",
@@ -16,7 +19,7 @@ st.set_page_config(
 st.title("SLICE Report")
 
 # -------------------------------------------------
-# Programme setup
+# PROGRAMME SETUP
 # -------------------------------------------------
 st.header("⚙️ Programme Setup")
 
@@ -24,17 +27,19 @@ num_schools = st.number_input(
     "Number of schools",
     min_value=1,
     max_value=10,
-    step=1,
-    value=1
+    value=1,
+    step=1
 )
 
 UPLOAD_DIR = "uploaded_photos"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # -------------------------------------------------
-# School Tabs
+# SCHOOL TABS
 # -------------------------------------------------
-school_tabs = st.tabs([f"School {i}" for i in range(1, num_schools + 1)])
+school_tabs = st.tabs(
+    [f"School {i}" for i in range(1, num_schools + 1)]
+)
 
 for school_index, school_tab in enumerate(school_tabs, start=1):
 
@@ -43,7 +48,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
         st.header(f"🏫 School {school_index}")
 
         # -------------------------------------------------
-        # School Information
+        # SCHOOL INFORMATION
         # -------------------------------------------------
         school_name = st.text_input(
             "School Name",
@@ -79,7 +84,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
         st.subheader("📜 Daily Reports")
 
         # -------------------------------------------------
-        # Day Tabs
+        # DAY TABS
         # -------------------------------------------------
         day_tabs = st.tabs(
             [f"Day {d}" for d in range(1, num_days + 1)]
@@ -90,7 +95,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
             with day_tab:
 
                 # -------------------------------------------------
-                # Enthusiasm Slider
+                # ENTHUSIASM SLIDER
                 # -------------------------------------------------
                 enthusiasm = st.select_slider(
                     "Student Enthusiasm",
@@ -100,7 +105,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                 )
 
                 # -------------------------------------------------
-                # Colour Indicator
+                # COLOUR INDICATOR
                 # -------------------------------------------------
                 if enthusiasm == "Low":
                     color = "#ff4b4b"
@@ -137,7 +142,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                 )
 
                 # -------------------------------------------------
-                # Comments
+                # COMMENTS
                 # -------------------------------------------------
                 st.text_area(
                     "Comments",
@@ -150,7 +155,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                 )
 
                 # -------------------------------------------------
-                # Photo Upload
+                # PHOTO UPLOAD
                 # -------------------------------------------------
                 photos = st.file_uploader(
                     "Attach photos (optional)",
@@ -160,16 +165,23 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                 )
 
                 if photos:
+
                     for photo in photos:
 
-                        filename = f"{school_index}_day{day}_{photo.name}"
-                        filepath = os.path.join(UPLOAD_DIR, filename)
+                        filename = (
+                            f"{school_index}_day{day}_{photo.name}"
+                        )
+
+                        filepath = os.path.join(
+                            UPLOAD_DIR,
+                            filename
+                        )
 
                         with open(filepath, "wb") as f:
                             f.write(photo.getbuffer())
 
         # -------------------------------------------------
-        # Submit Buttons
+        # SESSION STATE KEYS
         # -------------------------------------------------
         submit_key = f"submit_clicked_{school_index}"
         confirm_key = f"confirm_submit_{school_index}"
@@ -187,16 +199,18 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
         st.divider()
 
         # -------------------------------------------------
-        # Already Submitted
+        # ALREADY SUBMITTED
         # -------------------------------------------------
         if st.session_state[submitted_key]:
 
-            st.success("✅ This school has already been submitted.")
+            st.success(
+                "✅ This school has already been submitted."
+            )
 
         else:
 
             # -------------------------------------------------
-            # Initial Submit Button
+            # SUBMIT BUTTON
             # -------------------------------------------------
             if st.button(
                 f"📤 Submit School {school_index}",
@@ -205,7 +219,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                 st.session_state[submit_key] = True
 
             # -------------------------------------------------
-            # Confirmation Prompt
+            # CONFIRMATION BOX
             # -------------------------------------------------
             if st.session_state[submit_key]:
 
@@ -234,7 +248,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                         st.rerun()
 
             # -------------------------------------------------
-            # Final Submission
+            # FINAL SUBMISSION
             # -------------------------------------------------
             if st.session_state[confirm_key]:
 
@@ -249,7 +263,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                     try:
 
                         # -------------------------------------------------
-                        # Send ONE ROW PER DAY
+                        # SEND ONE ROW PER DAY
                         # -------------------------------------------------
                         for day in range(1, num_days + 1):
 
@@ -280,8 +294,12 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                                 json=row
                             )
 
+                            st.write(row)
+                            st.write("Status:", response.status_code)
+                            st.write(response.text)
+
                         # -------------------------------------------------
-                        # Success
+                        # SUCCESS
                         # -------------------------------------------------
                         if response.status_code == 200:
 
@@ -297,11 +315,6 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
 
                             st.error(
                                 "❌ Failed to send data to Google Sheets."
-                            )
-
-                            st.write(
-                                "Status code:",
-                                response.status_code
                             )
 
                     except Exception as e:
