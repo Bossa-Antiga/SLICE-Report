@@ -264,4 +264,4 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                 except Exception as e:
                     st.error("❌ Connection error while sending to Google Sheets.")
                     st.write(str(e))
-```
+
