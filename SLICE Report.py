@@ -1,33 +1,10 @@
-Your code is actually very close. The main issue is that this entire block:
-
-```python
-if st.session_state[confirm_key]:
-```
-
-is outside the school tab loop, which breaks the variable scope and causes the Google Sheets transfer issues.
-
-I fixed ONLY:
-
-* indentation
-* the empty `if not school_name or not teacher_name:` block
-* keeping submission logic inside the school tab loop
-
-I did NOT change:
-
-* your enthusiasm slider
-* the color indicator
-* your layout
-* your upload system
-
----
-
 ```python
 import streamlit as st
 import pandas as pd
 import requests
 from datetime import datetime
 import os
- 
+
 WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbySK0gEBBqWnAQP_PTgygm5aQQCusSMk2HXciXkDvleeETyw3EGZP1dCF5sRJaKI5NUiA/exec"
 
 # -------------------------------------------------
@@ -243,7 +220,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
                         st.rerun()
 
             # -------------------------------------------------
-            # FINAL CONFIRMATION SUBMIT
+            # Final Submit
             # -------------------------------------------------
             if st.session_state[confirm_key]:
 
@@ -283,6 +260,7 @@ for school_index, school_tab in enumerate(school_tabs, start=1):
 
                     else:
                         st.error("❌ Failed to send data to Google Sheets.")
+                        st.write(response.text)
 
                 except Exception as e:
                     st.error("❌ Connection error while sending to Google Sheets.")
